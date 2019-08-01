@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\T4C.Localization.DataAccess\T4C.Localization.DataAccess.csproj" />
+    <ProjectReference Include="..\T4C.Localization.Entities\T4C.Localization.Entities.csproj" />
+  </ItemGroup>
+
+</Project>
