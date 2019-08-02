@@ -1,2 +1,9 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Rajdhani:400,700&display=swap&subset=latin-ext');
+
+body,*{
+    font-family: 'Rajdhani', sans-serif;
+
+}
+input{
+    font-family: 'Rajdhani', sans-serif;
+}

@@ -1,17 +1,21 @@
-
 <div class="col-12 mt-5">
 
-<form class="form-inline">
-  <mat-form-field class="example-full-width">
-    <input [formControl]="autoCompleteControl" type="text" placeholder="Please type a translate keyword!" aria-label="Number" matInput  [matAutocomplete]="auto">
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let language of languages | async; let index=index" [value]="language.value">
-       #{{language.languageId}} {{language.value | titlecase}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
-</form>
+  <form class="form-inline">
+    <mat-form-field class="example-full-width">
+      <input [formControl]="autoCompleteControl" type="text" placeholder="Please type a translate keyword!"
+        aria-label="Number" matInput [matAutocomplete]="auto">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
+        <mat-option *ngFor="let language of languages | async; let index=index" [value]="language">
+          #{{language.languageId}} {{language.value | titlecase}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <small *ngIf="autoCompleteControl.errors && (autoCompleteControl.dirty || autoCompleteControl.touched)">
+      <mat-error *ngIf="autoCompleteControl.errors.required">keyword is required
+      </mat-error>
+      <mat-error *ngIf="autoCompleteControl.errors.minlength">Message must be at least {{autoCompleteControl.errors.minlength.requiredLength}} characters!</mat-error>
+    </small>
+  </form>
 </div>
-<!-- <p *ngFor="let language of languages">
-  {{language.value}}
-</p> -->
+<footer class="fixed-bottom h-25 bottom-bg">
+</footer>
