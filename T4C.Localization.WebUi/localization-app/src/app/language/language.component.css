@@ -11,6 +11,7 @@
 
 .bottom-bg {
   background-color: #C30A14;
+  height: 300px;
 }
 
 ::ng-deep .cdk-overlay-container{

@@ -4,6 +4,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MaterialModule} from './material-module';
+import {ClipboardModule} from 'ngx-clipboard';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LanguageComponent} from './language/language.component';
@@ -14,9 +15,10 @@ import {LanguageComponent} from './language/language.component';
     BrowserAnimationsModule,
     FormsModule,
     MaterialModule,
+    ClipboardModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   declarations: [AppComponent, LanguageComponent],
   bootstrap: [AppComponent],

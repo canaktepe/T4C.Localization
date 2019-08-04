@@ -1,10 +1,10 @@
-<div class="col-12 mt-5">
-
-  <form class="form-inline">
+<form class="form-inline">
+  <div class="col-12 mt-5">
     <mat-form-field class="example-full-width">
-      <input [formControl]="autoCompleteControl" type="text" placeholder="Please type a translate keyword!"
+      <input [formControl]="autoCompleteControl" type="text" placeholder="Please type a translate keyword or key!"
         aria-label="Number" matInput [matAutocomplete]="auto">
-      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onSelectionChanged($event)">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onSelectionChanged()">
+        <mat-option *ngIf="languages | async as languages">Add Keyword</mat-option>
         <mat-option *ngFor="let language of languages | async; let index=index" [value]="language">
           #{{language.languageId}} {{language.value | titlecase}}
         </mat-option>
@@ -13,9 +13,19 @@
     <small *ngIf="autoCompleteControl.errors && (autoCompleteControl.dirty || autoCompleteControl.touched)">
       <mat-error *ngIf="autoCompleteControl.errors.required">keyword is required
       </mat-error>
-      <mat-error *ngIf="autoCompleteControl.errors.minlength">Message must be at least {{autoCompleteControl.errors.minlength.requiredLength}} characters!</mat-error>
+      <mat-error *ngIf="autoCompleteControl.errors.minlength">Message must be at least
+        {{autoCompleteControl.errors.minlength.requiredLength}} characters!</mat-error>
     </small>
-  </form>
+  </div>
+</form>
+<div class="fixed-bottom bottom-bg">
+  <div class="container pt-5 pb-5 ">
+    <h2 class="page-header text-white font-weight-bold">Last items</h2>
+    <div class="row">
+      <div class="col-4 text-white" *ngFor="let lastLanguageItem of lastLanguageItems | async; let index=index" >
+        {{lastLanguageItem.value}}
+      </div>
+    
+    </div>
+  </div>
 </div>
-<footer class="fixed-bottom h-25 bottom-bg">
-</footer>

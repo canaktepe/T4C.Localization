@@ -10,6 +10,8 @@ namespace T4C.Localization.Business.Abstract
         Language Add(Language language);
         Language Update(Language language);
         void Delete(Language language);
-        List<Language> GetByValue(string value);
+        Language GetByValue(string value);
+        List<Language> LookUp(string keyOrValue);
+        List<Language> GetLastLanguageItems(int count);
     }
 }

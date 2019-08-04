@@ -6,6 +6,8 @@ namespace T4C.Localization.DataAccess.Abstract
 {
     public interface ILanguageDal : IEntityRepository<Language>
     {
-        List<Language> GetByValue(string value);
+        Language GetByValue(string value);
+        List<Language> LookUp(string keyOrValue);
+        List<Language> GetAllByCount(int count);
     }
 }

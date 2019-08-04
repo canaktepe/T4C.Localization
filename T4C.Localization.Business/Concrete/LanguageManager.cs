@@ -39,9 +39,19 @@ namespace T4C.Localization.Business.Concrete
             _languageDal.Delete(language);
         }
 
-        public List<Language> GetByValue(string value)
+        public Language GetByValue(string value)
         {
             return _languageDal.GetByValue(value);
+        }
+
+        public List<Language> LookUp(string keyOrValue)
+        {
+            return _languageDal.LookUp(keyOrValue);
+        }
+
+        public List<Language> GetLastLanguageItems(int count)
+        {
+            return _languageDal.GetAllByCount(count);
         }
     }
 }

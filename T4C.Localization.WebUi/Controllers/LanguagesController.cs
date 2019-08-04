@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using T4C.Localization.Business.Abstract;
+using T4C.Localization.Entities.Concrete.LanguageModels;
 
 namespace T4C.Localization.WebUi.Controllers
 {
@@ -28,24 +29,36 @@ namespace T4C.Localization.WebUi.Controllers
         }
 
         [HttpGet]
-        [Route("GetByValue/{value}")]
+        [Route("LookUp/{value}")]
         public IActionResult Get(string value)
         {
-            var data = _languageManager.GetByValue(value);
+            var data = _languageManager.LookUp(value);
             return Ok(data);
         }
 
-        // GET: api/Default/5
-        [HttpGet("{id}", Name = "GetById")]
-        public string Get(int id)
+        [HttpGet]
+        [Route("GetLastLanguageItems/{count}")]
+        public IActionResult Get(int count)
         {
-            return "value";
+            var data = _languageManager.GetLastLanguageItems(count);
+            return Ok(data);
         }
 
         // POST: api/Default
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] string value)
         {
+            var exists = _languageManager.GetByValue(value);
+            if (exists != null)
+            {
+                return BadRequest(exists);
+            }
+            var model = new Language
+            {
+                Value = value
+            };
+            var data = _languageManager.Add(model);
+            return Ok(data);
         }
 
         // PUT: api/Default/5

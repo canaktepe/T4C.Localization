@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { Language } from '../models/language';
-import { LanguagesService } from '../services/languages.service';
-import { Observable, of } from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, Validators} from '@angular/forms';
+import {Language} from '../models/language';
+import {LanguagesService} from '../services/languages.service';
+import {Observable, of, Subject} from 'rxjs';
 import {
   startWith,
   map,
@@ -10,8 +10,8 @@ import {
   switchMap,
   catchError
 } from 'rxjs/operators';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
-import { NotificationsService } from '../services/notifications.service';
+import {NotificationsService} from '../services/notifications.service';
+import {ClipboardService} from 'ngx-clipboard';
 
 @Component({
   selector: 'app-language',
@@ -19,37 +19,113 @@ import { NotificationsService } from '../services/notifications.service';
   styleUrls: ['./language.component.css']
 })
 export class LanguageComponent implements OnInit {
-
-  autoCompleteControl = new FormControl('',{validators: Validators.compose([Validators.required, Validators.minLength(3)])});
+  private lastItemCount = 10;
+  private keyMinLength = 2;
+  autoCompleteControl = new FormControl('', {
+    validators: Validators.compose([
+      Validators.required,
+      Validators.minLength(this.keyMinLength)
+    ])
+  });
+  private keyword: string;
   languages: Observable<Language[]> = null;
+  lastLanguageItems = new Subject<Language[]>();
 
-  constructor(private languagesService: LanguagesService,
-    private notificationsService: NotificationsService) { }
+  constructor(
+    private languagesService: LanguagesService,
+    private notificationsService: NotificationsService,
+    private clipboardService: ClipboardService
+  ) {}
 
   ngOnInit() {
     this.languages = this.autoCompleteControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
       switchMap(value => {
-        if (!this.autoCompleteControl.valid) return of(null);
-        return this.lookUp(value);
+        if (!this.autoCompleteControl.valid) {
+          return of(null);
+        }
+        this.keyword = value;
+        return this.lookUp(encodeURIComponent(value));
       })
-    )
+    );
+    this.languagesService
+      .getLastLanguageItems(this.lastItemCount)
+      .subscribe(value => {
+        this.lastLanguageItems.next(value);
+      });
+  }
+
+  getLastLanguageItems() {
+    return this.lastLanguageItems.asObservable();
   }
 
   lookUp(value: string): Observable<Language[]> {
-    return this.languagesService.getByValue(value.toLowerCase()).pipe(
+    if (!this.autoCompleteControl.valid) {
+      return;
+    }
+    return this.languagesService.lookUp(value.toLowerCase()).pipe(
       map(results => results),
       catchError(_ => {
         return of(null);
       })
-    )
+    );
   }
 
-  onSelectionChanged(event: MatAutocompleteSelectedEvent) {
-    let keyword = this.autoCompleteControl.value;
-    let message = `#${keyword.languageId} ${keyword.value} has been copied`;
-    this.notificationsService.showNotification(message)
+  onSelectionChanged() {
+    const keyword = this.autoCompleteControl.value;
+    if (!keyword) {
+      this.addKeyword(this.keyword);
+      return;
+    }
+    this.copyClipboard(keyword);
+  }
+
+  copyClipboard(keyword) {
+    const copyText = `${keyword.languageId} ${keyword.value}`;
+    this.clipboardService.copyFromContent(copyText);
+    const message = `#${copyText} has been copied`;
+    this.notificationsService.showNotification(message);
+    this.resetKeywordInput();
+  }
+
+  getLanguagesCount(): number {
+    let count = 0;
+    this.languages.subscribe((lang: Language[]) => {
+      count = lang ? lang.length : 0;
+    });
+    return count;
+  }
+
+  addKeyword(keyword: string) {
+    this.languagesService.addLanguage(keyword).subscribe(
+      (lang: Language) => {
+        if (lang == null) {
+          this.notificationsService.showNotification(
+            `this keyword has already been added! copied clipboard...`
+          );
+          return;
+        }
+
+        let lastItems= this.getLastLanguageItems().subscribe(s=>{
+          s.push(lang);
+        });
+      
+
+
+        this.notificationsService.showNotification(
+          `added new language item #${lang.languageId} ${lang.value}`
+        );
+        this.resetKeywordInput();
+      },
+      err => {
+        const keyword = err.error;
+        this.copyClipboard(keyword);
+      }
+    );
+  }
+
+  resetKeywordInput() {
     this.autoCompleteControl.reset();
     this.autoCompleteControl.markAsUntouched();
   }
