@@ -19,7 +19,7 @@ import {ClipboardService} from 'ngx-clipboard';
   styleUrls: ['./language.component.css']
 })
 export class LanguageComponent implements OnInit {
-  private lastItemCount = 10;
+  private lastItemCount = 18;
   private keyMinLength = 2;
   autoCompleteControl = new FormControl('', {
     validators: Validators.compose([
@@ -29,7 +29,8 @@ export class LanguageComponent implements OnInit {
   });
   private keyword: string;
   languages: Observable<Language[]> = null;
-  lastLanguageItems = new Subject<Language[]>();
+  lastLanguageItems : Language[] = [];
+  _lastLanguageItems = new Subject<Language[]>();
 
   constructor(
     private languagesService: LanguagesService,
@@ -52,12 +53,9 @@ export class LanguageComponent implements OnInit {
     this.languagesService
       .getLastLanguageItems(this.lastItemCount)
       .subscribe(value => {
-        this.lastLanguageItems.next(value);
+        this.lastLanguageItems=value;
+        this._lastLanguageItems.next(this.lastLanguageItems);
       });
-  }
-
-  getLastLanguageItems() {
-    return this.lastLanguageItems.asObservable();
   }
 
   lookUp(value: string): Observable<Language[]> {
@@ -107,11 +105,11 @@ export class LanguageComponent implements OnInit {
           return;
         }
 
-        let lastItems= this.getLastLanguageItems().subscribe(s=>{
-          s.push(lang);
-        });
-      
+        if(this.lastLanguageItems.length>=this.lastItemCount)
+        this.lastLanguageItems.pop();
 
+        this.lastLanguageItems.unshift(lang);
+        this._lastLanguageItems.next(this.lastLanguageItems);
 
         this.notificationsService.showNotification(
           `added new language item #${lang.languageId} ${lang.value}`

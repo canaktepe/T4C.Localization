@@ -4,6 +4,7 @@ import {LanguageComponent} from './language/language.component';
 
 const routes: Routes = [
   {path: '*', component: LanguageComponent, pathMatch: 'full'},
+  {path: '**', component: LanguageComponent, pathMatch: 'full'},
   {path: 'language', component: LanguageComponent}
 ];
 
