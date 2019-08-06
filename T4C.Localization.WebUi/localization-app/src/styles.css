@@ -12,3 +12,7 @@ input{
 .font-mark{
     font-family: 'Marck Script', cursive !important;
 }
+*:focus {
+    outline: none !important;
+    border: 0 !important;
+}

@@ -9,6 +9,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LanguageComponent} from './language/language.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 
 @NgModule({
    imports: [
@@ -24,7 +25,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
    declarations: [
       AppComponent,
       LanguageComponent,
-      NavMenuComponent
+      NavMenuComponent,
+      ClickStopPropagationDirective
    ],
    bootstrap: [
       AppComponent

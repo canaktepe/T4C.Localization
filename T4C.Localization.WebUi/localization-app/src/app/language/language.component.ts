@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
-import {Language} from '../models/language';
-import {LanguagesService} from '../services/languages.service';
-import {Observable, of, Subject} from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { Language } from '../models/language';
+import { LanguagesService } from '../services/languages.service';
+import { Observable, of, Subject } from 'rxjs';
 import {
   startWith,
   map,
@@ -10,13 +10,14 @@ import {
   switchMap,
   catchError
 } from 'rxjs/operators';
-import {NotificationsService} from '../services/notifications.service';
-import {ClipboardService} from 'ngx-clipboard';
+import { NotificationsService } from '../services/notifications.service';
+import { ClipboardService } from 'ngx-clipboard';
+import { MyClipboardService } from '../services/my-clipboard.service';
 
 @Component({
   selector: 'app-language',
   templateUrl: './language.component.html',
-  styleUrls: ['./language.component.css']
+  styleUrls: ['./language.component.css'],
 })
 export class LanguageComponent implements OnInit {
   private lastItemCount = 18;
@@ -29,14 +30,15 @@ export class LanguageComponent implements OnInit {
   });
   private keyword: string;
   languages: Observable<Language[]> = null;
-  lastLanguageItems : Language[] = [];
+  lastLanguageItems: Language[] = [];
   _lastLanguageItems = new Subject<Language[]>();
 
   constructor(
     private languagesService: LanguagesService,
     private notificationsService: NotificationsService,
-    private clipboardService: ClipboardService
-  ) {}
+    private clipboardService: ClipboardService,
+    private myClipboardService : MyClipboardService
+  ) { }
 
   ngOnInit() {
     this.languages = this.autoCompleteControl.valueChanges.pipe(
@@ -53,7 +55,7 @@ export class LanguageComponent implements OnInit {
     this.languagesService
       .getLastLanguageItems(this.lastItemCount)
       .subscribe(value => {
-        this.lastLanguageItems=value;
+        this.lastLanguageItems = value;
         this._lastLanguageItems.next(this.lastLanguageItems);
       });
   }
@@ -83,6 +85,8 @@ export class LanguageComponent implements OnInit {
     const copyText = `${keyword.languageId} ${keyword.value}`;
     this.clipboardService.copyFromContent(copyText);
     const message = `#${copyText} has been copied`;
+    
+    this.myClipboardService.addClipboard(keyword);
     this.notificationsService.showNotification(message);
     this.resetKeywordInput();
   }
@@ -105,8 +109,8 @@ export class LanguageComponent implements OnInit {
           return;
         }
 
-        if(this.lastLanguageItems.length>=this.lastItemCount)
-        this.lastLanguageItems.pop();
+        if (this.lastLanguageItems.length >= this.lastItemCount)
+          this.lastLanguageItems.pop();
 
         this.lastLanguageItems.unshift(lang);
         this._lastLanguageItems.next(this.lastLanguageItems);
@@ -114,10 +118,12 @@ export class LanguageComponent implements OnInit {
         this.notificationsService.showNotification(
           `added new language item #${lang.languageId} ${lang.value}`
         );
+        this.myClipboardService.addClipboard(lang);
         this.resetKeywordInput();
       },
       err => {
         const keyword = err.error;
+        this.myClipboardService.addClipboard(keyword);
         this.copyClipboard(keyword);
       }
     );

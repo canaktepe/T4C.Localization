@@ -1,0 +1,7 @@
+::ng-deep .mat-menu-content{
+    max-height: 410px;
+  
+}
+::ng-deep .mat-menu-panel{
+    min-width: 300px !important;
+}
