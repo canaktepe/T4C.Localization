@@ -8,10 +8,9 @@ export class ClickStopPropagationDirective {
   constructor() { 
   }
 
-  @HostListener("click", ["$event.target"])
+  @HostListener("click", ["$event"])
   public onClick(event: any): void
   {
       event.stopPropagation();
   }
-
 }

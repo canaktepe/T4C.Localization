@@ -16,14 +16,23 @@ export class MyClipboardService {
     return this.clipboardSubject.asObservable()
   }
 
-  addClipboard(language: Language): void {
-      this.clipboard.push(language)
-      this.clipboardSubject.next(this.clipboard);
+  addClipboard(language: Language): boolean {
+    var exists = this.existClipboard(language);
+    if (exists) return false;
+
+    this.clipboard.push(language)
+    this.clipboardSubject.next(this.clipboard);
+    return true;
+  }
+
+  existClipboard(language: Language): boolean {
+    const exists = this.clipboard.find(l => { return l.languageId == language.languageId });
+    return exists != undefined
   }
 
   removeClipboard(language: Language): void {
-    this.clipboard = this.clipboard.filter((l:Language)=>{
-      return l.languageId !== language.languageId  
+    this.clipboard = this.clipboard.filter((l: Language) => {
+      return l.languageId !== language.languageId
     });
     this.clipboardSubject.next(this.clipboard);
   }

@@ -1,7 +1,17 @@
-::ng-deep .mat-menu-content{
-    max-height: 410px;
-  
+::ng-deep .mat-menu-content {
+  max-height: 410px;
 }
-::ng-deep .mat-menu-panel{
-    min-width: 300px !important;
+
+::ng-deep .mat-menu-panel {
+  min-width: 300px !important;
+}
+
+.remove-clipboard-item {
+  font-size: 1rem;
+  width: auto;
+  height: auto;
+}
+
+.remove-clipboard-item:hover {
+  color: #C30A14 !important;
 }

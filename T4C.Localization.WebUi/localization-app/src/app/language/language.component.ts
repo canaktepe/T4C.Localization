@@ -37,7 +37,7 @@ export class LanguageComponent implements OnInit {
     private languagesService: LanguagesService,
     private notificationsService: NotificationsService,
     private clipboardService: ClipboardService,
-    private myClipboardService : MyClipboardService
+    private myClipboardService: MyClipboardService
   ) { }
 
   ngOnInit() {
@@ -82,12 +82,14 @@ export class LanguageComponent implements OnInit {
   }
 
   copyClipboard(keyword) {
-    const copyText = `${keyword.languageId} ${keyword.value}`;
+    const copyText = `${keyword.languageId}\t${keyword.value}`;
     this.clipboardService.copyFromContent(copyText);
     const message = `#${copyText} has been copied`;
-    
-    this.myClipboardService.addClipboard(keyword);
-    this.notificationsService.showNotification(message);
+
+    const added = this.myClipboardService.addClipboard(keyword);
+    if (added) {
+      this.notificationsService.showNotification(message);
+    }
     this.resetKeywordInput();
   }
 
@@ -118,7 +120,9 @@ export class LanguageComponent implements OnInit {
         this.notificationsService.showNotification(
           `added new language item #${lang.languageId} ${lang.value}`
         );
+
         this.myClipboardService.addClipboard(lang);
+        this.copyClipboard(lang);
         this.resetKeywordInput();
       },
       err => {

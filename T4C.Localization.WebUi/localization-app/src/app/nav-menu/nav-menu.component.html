@@ -3,23 +3,22 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
-
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" [matMenuTriggerFor]="menu"
           aria-haspopup="true" aria-expanded="false" [ngClass]="{'disabled': clipboard.length==0 }">
           <i class="far fa-clipboard"></i> My Clipboard
         </a>
-
         <mat-menu #menu="matMenu" aria-labelledby="navbarDropdown" class="p-0 pr-1 pl-1" overlapTrigger="false">
-
-
-
           <ng-template matMenuContent>
-
-
             <mat-selection-list #clipboardItems>
               <mat-list-option appClickStopPropagation *ngFor="let item of clipboard" color="warn" [selected]="true"
                 [checkboxPosition]="before">
-                #{{item.languageId}} {{item.value}}
+                <div class="d-flex align-items-center justify-content-between">
+                  #{{item.languageId}} {{item.value}}
+                  <button appClickStopPropagation (click)="removeClipboard(item)" mat-icon-button color="secondary" aria-label="Example icon-button with a remove icon"
+                    class="float-right remove-clipboard-item">
+                    <i class="far fa-minus-square"></i>
+                  </button>
+                </div>
               </mat-list-option>
             </mat-selection-list>
             <div class="text-center">
@@ -27,14 +26,11 @@
               Item selected: {{clipboardItems.selectedOptions.selected.length}}
             </div>
             <div class="text-center">
-              <button mat-button>Copy all</button>
-              <button mat-button>Clear all</button>
+              <button class="mr-1" mat-stroked-button color="basic" (click)="copySelectedToClipboard()">Copy all</button>
+              <button class="ml-1" mat-stroked-button color="warn" (click)="clearClipBoard()">Clear all</button>
             </div>
           </ng-template>
-
-
         </mat-menu>
-
       </li>
     </ul>
   </div>

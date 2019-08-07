@@ -18,18 +18,14 @@
     </small>
   </div>
 </form>
-<button mat-button [matMenuTriggerFor]="menu">Menu</button>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item>Item 1</button>
-  <button mat-menu-item>Item 2</button>
-</mat-menu>
 <div class="fixed-bottom bottom-bg">
   <div class="container pt-4 pb-4 ">
     <h2 class="page-header text-white font-weight-bold mb-3">Last items</h2>
     <div class="row">
       <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-xs-12 text-white mb-2"
         *ngFor="let lastLanguageItem of _lastLanguageItems | async; let index=index">
-        <button class="btn btn-sm btn-light text-dark rounded-circle copy-last-item" (click)="copyClipboard(lastLanguageItem)">
+        <button appToggleClass class="btn btn-sm btn-light text-dark rounded-circle copy-last-item"
+          (click)="copyClipboard(lastLanguageItem)">
         </button><small class="last-item-code ml-1 mr-1 font-weight-bold">#{{lastLanguageItem.languageId}}</small>
         {{lastLanguageItem.value}}
       </div>

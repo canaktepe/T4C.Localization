@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Language } from '../models/language';
 import { MyClipboardService } from '../services/my-clipboard.service';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'app-nav-menu',
@@ -11,7 +12,8 @@ export class NavMenuComponent implements OnInit {
 
   clipboard: Language[] = [];
 
-  constructor(private myClipboardService:MyClipboardService) { }
+  constructor(private myClipboardService:MyClipboardService,
+    private clipboardService:ClipboardService) { }
 
   ngOnInit() {
       this.myClipboardService.clipboardSubject.subscribe(data=>{
@@ -29,5 +31,14 @@ export class NavMenuComponent implements OnInit {
 
   clearClipBoard():void{
     this.myClipboardService.clearClipboard();
+  }
+
+  copySelectedToClipboard():void{
+    let copyData = "";
+    this.clipboard.forEach(data=>{ 
+        copyData+=`${data.languageId}\t${data.value}\n`;
+    })
+    this.clipboardService.copyFromContent(copyData)
+    this.clearClipBoard();
   }
 }

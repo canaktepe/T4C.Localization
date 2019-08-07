@@ -14,22 +14,29 @@
   height: 300px;
 }
 
-::ng-deep .cdk-overlay-container{
+::ng-deep .cdk-overlay-container {
   z-index: 9999 !important;
 }
-.copy-last-item{
-  width:20px;
-  height:20px;
+
+.copy-last-item {
+  width: 20px;
+  height: 20px;
 }
-.copy-last-item::before{
+
+.copy-last-item.btn-danger{
+  box-shadow: -5px 0px 5px #333
+}
+
+.copy-last-item::before {
   font-family: "Font Awesome 5 Free";
-  content:"\f328";
+  content: "\f328";
   display: inline-block;
-  position:absolute;
+  position: absolute;
   top: 4px;
   left: 21px;
   font-size: 10px;
 }
-.last-item-code{
-  color:rgb(243, 243, 243)
+
+.last-item-code {
+  color: rgb(243, 243, 243)
 }
